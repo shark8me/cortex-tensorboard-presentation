@@ -1,0 +1,114 @@
+
+#+REVEAL_ROOT: http://cdn.jsdelivr.net/reveal.js/3.0.0/
+#+TITLE: Neural Networks in Clojure with Cortex and Tensorboard
+#+AUTHOR: Kiran Karkera
+#+GITHUB: kirank.in
+#+REVEAL_THEME: night
+#+STARTUP: overview
+#+STARTUP: content
+#+STARTUP: showall
+#+STARTUP: showeverything
+#+OPTIONS: num:nil
+
+* Why NNs in Clojure
+ A data science pipeline comprises of tasks such as
+
+1. Data Extraction (from databases/web crawls/other sources)
+2. Data Preprocessing and cleaning 
+3. Model training and evaluation 
+4. Productizing a trained model
+
+Clojure (+Java) libraries are quite capable at all of the above, including (non-neural network) machine learning toolkits 
+To use a NN toolkit in a different language (such as Python) requires clunky cross-language interactions. 
+
+ 
+[[https://arxiv.org/pdf/1608.07249v7.pdf][Benchmarking deep learning tools]]
+
+* Machine Learning digression
+
+*** Supervised machine learning:
+
+#+BEGIN_QUOTE
+When you are a kid[fn:1] and you see different types of animals, your father tells you that this particular animal is a dog. After doing this a few times, 
+you see a new type of dog that you never saw before - you identify it as a dog and not as a cat or a monkey or a potato.
+#+END_QUOTE
+
+#+CAPTION: Dogs vs cats
+
+[[./woof_meow.jpg]]
+
+[fn:1] https://www.quora.com/What-is-the-difference-between-supervised-and-unsupervised-learning-algorithms/answer/Shehroz-Khan-2?srid=o0Wh
+
+** Uses of Supervised learning 
+
+What can supervised learning be used for?
+
+A competition to distinguish between cats and dogs was conducted in 2014.
+Training on 25,000 images of dogs and cats, the leading teams got to 98.9% accuracy.[fn:2] 
+
+#+CAPTION: Differentiating between dogs and cats
+
+[[./cat_or_dog.jpg]]
+
+[fn:2]https://www.kaggle.com/c/dogs-vs-cats/leaderboard
+
+*** 
+Classifying aspects of human faces such as gender, age, type of expression and skin colour
+
+#+CAPTION: Classifying gender, age and skin colour
+
+[[./face_gender.png]]
+
+*** 
+One of the earliest uses for supervised machine  learning was reading the zip code in postal mail.[fn:3]
+We'll use this a starting example to try Cortex.
+
+#+CAPTION: Handwritten digits  
+    [[./MNIST.png]] 
+
+[fn:3] http://yann.lecun.com/exdb/publis/pdf/matan-92.pdf
+
+* Neural Networks
+
+Why are NNs popular?
+
+- Many classifications algorithms exist (e.g. SVM, nearest neighbours, Random Forest)
+- NNs offer state of the art performance in several classification tasks[fn:4]. 
+  - (0.21% error rate on MNIST, close to or better than human performance)
+- Composable abstractions (different layers can be combined and computations are straightforward, thanks to the back propogation algorithm)
+- Distributed learning is feasible. 
+
+[fn:4] http://rodrigob.github.io/are_we_there_yet/build/classification_datasets_results.html#4d4e495354
+
+*** Composability
+
+- Composability extends to different domains 
+  - (e.g the im2txt model, which takes an image as input and returns a text description as output). 
+
+#+CAPTION: im2txt network provides descriptions of images
+
+       [[./example_captions.jpg]]
+
+
+
+* Cortex
+
+
+The [[https://github.com/thinktopic/cortex][Cortex library]] is a relatively recent library that implements Neural Networks in pure Clojure.
+
+Features:
+1. Multiple backends (GPU and CPU) 
+2. Supports popular network types (Feedforward/CNNs) 
+3. Model serialization supported in multiple formats (edn/nippy)
+4. Fairly active (~900 commits/11 releases/24 contributors)
+* Why Tensorboard
+
+#+BEGIN_SRC clojure
+
+(let [a 1000 
+b 20]
+(+ a b))
+
+#+END_SRC
+
+*  

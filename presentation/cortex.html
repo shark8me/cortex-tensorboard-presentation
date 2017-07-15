@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<title>Neural Networks in Clojure with Cortex and Tensorboard</title>
+<meta name="author" content="(Kiran Karkera)"/>
+<style type="text/css">
+.underline { text-decoration: underline; }
+</style>
+<link rel="stylesheet" href="http://cdn.jsdelivr.net/reveal.js/3.0.0/css/reveal.css"/>
+
+<link rel="stylesheet" href="http://cdn.jsdelivr.net/reveal.js/3.0.0/css/theme/night.css" id="theme"/>
+
+
+<!-- If the query includes 'print-pdf', include the PDF print sheet -->
+<script>
+    if( window.location.search.match( /print-pdf/gi ) ) {
+        var link = document.createElement( 'link' );
+        link.rel = 'stylesheet';
+        link.type = 'text/css';
+        link.href = 'http://cdn.jsdelivr.net/reveal.js/3.0.0/css/print/pdf.css';
+        document.getElementsByTagName( 'head' )[0].appendChild( link );
+    }
+</script>
+</head>
+<body>
+<div class="reveal">
+<div class="slides">
+<section id="sec-title-slide"><h1 class="title">Neural Networks in Clojure with Cortex and Tensorboard</h1><h2 class="author">Kiran Karkera</h2><p class="date">Created: 2017-07-15 Sat 13:48</p>
+</section>
+<section id="table-of-contents">
+<div id="table-of-contents">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents">
+<ul>
+<li><a href="#/slide-orgd3807c2">Why NNs in Clojure</a></li>
+<li><a href="#/slide-orgf5e3b90">Machine Learning digression</a>
+<ul>
+<li>
+<ul>
+<li><a href="#/slide-org2399279">Supervised machine learning:</a></li>
+</ul>
+</li>
+<li><a href="#/slide-org2d13416">Uses of Supervised learning</a>
+<ul>
+<li><a href="#/slide-orgaef7b9f"></a></li>
+<li><a href="#/slide-org576ebac"></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="#/slide-orgf4dc237">Neural Networks</a>
+<ul>
+<li>
+<ul>
+<li><a href="#/slide-orgb5a215b">Composability</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="#/slide-orgf9f53fe">Cortex</a></li>
+<li><a href="#/slide-orgad25973">Why Tensorboard</a></li>
+<li><a href="#/slide-org2cd5030"></a></li>
+</ul>
+</div>
+</div>
+</section>
+
+<section>
+<section id="slide-orgd3807c2">
+<h2 id="orgd3807c2">Why NNs in Clojure</h2>
+<p>
+A data science pipeline comprises of tasks such as
+</p>
+
+<ol>
+<li>Data Extraction (from databases/web crawls/other sources)</li>
+<li>Data Preprocessing and cleaning</li>
+<li>Model training and evaluation</li>
+<li>Productizing a trained model</li>
+
+</ol>
+
+<p>
+Clojure (+Java) libraries are quite capable at all of the above, including (non-neural network) machine learning toolkits 
+To use a NN toolkit in a different language (such as Python) requires clunky cross-language interactions. 
+</p>
+
+
+<p>
+<a href="https://arxiv.org/pdf/1608.07249v7.pdf">Benchmarking deep learning tools</a>
+</p>
+
+</section>
+</section>
+<section>
+<section id="slide-orgf5e3b90">
+<h2 id="orgf5e3b90">Machine Learning digression</h2>
+<div class="outline-text-2" id="text-orgf5e3b90">
+</div></section>
+<section id="slide-org2399279">
+<h4 id="org2399279">Supervised machine learning:</h4>
+<blockquote nil>
+<p>
+When you are a kid<sup><a id="fnr.1" class="footref" href="#fn.1">1</a></sup> and you see different types of animals, your father tells you that this particular animal is a dog. After doing this a few times, 
+you see a new type of dog that you never saw before - you identify it as a dog and not as a cat or a monkey or a potato.
+</p>
+</blockquote>
+
+
+<div class="figure">
+<p><img src="./woof_meow.jpg" alt="woof_meow.jpg" />
+</p>
+</div>
+
+</section>
+<section id="slide-org2d13416">
+<h3 id="org2d13416">Uses of Supervised learning</h3>
+<p>
+What can supervised learning be used for?
+</p>
+
+<p>
+A competition to distinguish between cats and dogs was conducted in 2014.
+Training on 25,000 images of dogs and cats, the leading teams got to 98.9% accuracy.<sup><a id="fnr.2" class="footref" href="#fn.2">2</a></sup> 
+</p>
+
+
+<div class="figure">
+<p><img src="./cat_or_dog.jpg" alt="cat_or_dog.jpg" />
+</p>
+</div>
+
+</section>
+<section id="slide-orgaef7b9f">
+<h4 id="orgaef7b9f"></h4>
+<p>
+Classifying aspects of human faces such as gender, age, type of expression and skin colour
+</p>
+
+
+<div class="figure">
+<p><img src="./face_gender.png" alt="face_gender.png" />
+</p>
+</div>
+
+</section>
+<section id="slide-org576ebac">
+<h4 id="org576ebac"></h4>
+<p>
+One of the earliest uses for supervised machine  learning was reading the zip code in postal mail.<sup><a id="fnr.3" class="footref" href="#fn.3">3</a></sup>
+We'll use this a starting example to try Cortex.
+</p>
+
+
+<div class="figure">
+<p><img src="./MNIST.png" alt="MNIST.png" /> 
+</p>
+<p><span class="figure-number">Figure 4: </span>Handwritten digits</p>
+</div>
+
+</section>
+</section>
+<section>
+<section id="slide-orgf4dc237">
+<h2 id="orgf4dc237">Neural Networks</h2>
+<p>
+Why are NNs popular?
+</p>
+
+<ul>
+<li>Many classifications algorithms exist (e.g. SVM, nearest neighbours, Random Forest)</li>
+<li>NNs offer state of the art performance in several classification tasks<sup><a id="fnr.4" class="footref" href="#fn.4">4</a></sup>. 
+<ul>
+<li>(0.21% error rate on MNIST, close to or better than human performance)</li>
+
+</ul></li>
+<li>Composable abstractions (different layers can be combined and computations are straightforward, thanks to the back propogation algorithm)</li>
+<li>Distributed learning is feasible.</li>
+
+</ul>
+
+</section>
+<section id="slide-orgb5a215b">
+<h4 id="orgb5a215b">Composability</h4>
+<ul>
+<li>Composability extends to different domains 
+<ul>
+<li>(e.g the im2txt model, which takes an image as input and returns a text description as output).</li>
+
+</ul></li>
+
+</ul>
+
+
+<div class="figure">
+<p><img src="./example_captions.jpg" alt="example_captions.jpg" />
+</p>
+</div>
+
+
+
+</section>
+</section>
+<section>
+<section id="slide-orgf9f53fe">
+<h2 id="orgf9f53fe">Cortex</h2>
+<p>
+The <a href="https://github.com/thinktopic/cortex">Cortex library</a> is a relatively recent library that implements Neural Networks in pure Clojure.
+</p>
+
+<p>
+Features:
+</p>
+<ol>
+<li>Multiple backends (GPU and CPU)</li>
+<li>Supports popular network types (Feedforward/CNNs)</li>
+<li>Model serialization supported in multiple formats (edn/nippy)</li>
+<li>Fairly active (~900 commits/11 releases/24 contributors)</li>
+
+</ol>
+</section>
+</section>
+<section>
+<section id="slide-orgad25973">
+<h2 id="orgad25973">Why Tensorboard</h2>
+<div class="org-src-container">
+
+<pre  class="src src-clojure"><span style="color: #4f97d7;">(</span><span style="color: #4f97d7; font-weight: bold;">let</span> <span style="color: #bc6ec5;">[</span>a <span style="color: #a45bad;">1000</span> 
+b <span style="color: #a45bad;">20</span><span style="color: #bc6ec5;">]</span>
+<span style="color: #bc6ec5;">(</span>+ a b<span style="color: #bc6ec5;">)</span><span style="color: #4f97d7;">)</span>
+
+</pre>
+</div>
+
+</section>
+</section>
+<section>
+<section id="slide-org2cd5030">
+<h2 id="org2cd5030"></h2>
+</section>
+</section>
+</div>
+</div>
+<script src="http://cdn.jsdelivr.net/reveal.js/3.0.0/lib/js/head.min.js"></script>
+<script src="http://cdn.jsdelivr.net/reveal.js/3.0.0/js/reveal.js"></script>
+
+<script>
+// Full list of configuration options available here:
+// https://github.com/hakimel/reveal.js#configuration
+Reveal.initialize({
+
+controls: true,
+progress: true,
+history: false,
+center: true,
+slideNumber: 'c',
+rollingLinks: false,
+keyboard: true,
+overview: true,
+
+theme: Reveal.getQueryHash().theme, // available themes are in /css/theme
+transition: Reveal.getQueryHash().transition || 'default', // default/cube/page/concave/zoom/linear/fade/none
+transitionSpeed: 'default',
+multiplex: {
+    secret: '', // null if client
+    id: '', // id, obtained from socket.io server
+    url: '' // Location of socket.io server
+},
+
+// Optional libraries used to extend on reveal.js
+dependencies: [
+ { src: 'http://cdn.jsdelivr.net/reveal.js/3.0.0/lib/js/classList.js', condition: function() { return !document.body.classList; } },
+ { src: 'http://cdn.jsdelivr.net/reveal.js/3.0.0/plugin/markdown/marked.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+ { src: 'http://cdn.jsdelivr.net/reveal.js/3.0.0/plugin/markdown/markdown.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+ { src: 'http://cdn.jsdelivr.net/reveal.js/3.0.0/plugin/zoom-js/zoom.js', async: true, condition: function() { return !!document.body.classList; } },
+ { src: 'http://cdn.jsdelivr.net/reveal.js/3.0.0/plugin/notes/notes.js', async: true, condition: function() { return !!document.body.classList; } }]
+});
+</script>
+</body>
+</html>
