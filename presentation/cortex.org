@@ -11,16 +11,25 @@
 #+OPTIONS: num:nil
 
 * Why NNs in Clojure
- A data science pipeline comprises of tasks such as
 
-1. Data Extraction (from databases/web crawls/other sources)
-2. Data Preprocessing and cleaning 
-3. Model training and evaluation 
-4. Productizing a trained model
+ A machine learning task's pipeline comprises of the following tasks 
+
+- Data Extraction (from databases/web crawls/other sources)
+- Data Preprocessing and cleaning 
+- Model training and evaluation 
+- Using trained model for inference 
 
 Clojure (+Java) libraries are quite capable at all of the above, including (non-neural network) machine learning toolkits 
 To use a NN toolkit in a different language (such as Python) requires clunky cross-language interactions. 
 
+*** Exceptions 
+
+- Pretrained networks available for the task 
+  - Relevant when training network from scratch can take weeks 
+
+**** Alternatives:
+- Train in a different toolset, inference in Clojure/Java
+  - For example train in Tensorflow, and use trained network from Java or Clojure
  
 [[https://arxiv.org/pdf/1608.07249v7.pdf][Benchmarking deep learning tools]]
 
@@ -43,14 +52,13 @@ you see a new type of dog that you never saw before - you identify it as a dog a
 
 What can supervised learning be used for?
 
-A competition to distinguish between cats and dogs was conducted in 2014.
-Training on 25,000 images of dogs and cats, the leading teams got to 98.9% accuracy.[fn:2] 
+A Kaggle competition to distinguish between cats and dogs was conducted in 2014.
+Training on 25,000 images of dogs and cats, the leading teams got to 98.9% [[https://www.kaggle.com/c/dogs-vs-cats/leaderboard][accuracy]]. 
 
 #+CAPTION: Differentiating between dogs and cats
 
 [[./cat_or_dog.jpg]]
 
-[fn:2]https://www.kaggle.com/c/dogs-vs-cats/leaderboard
 
 *** 
 Classifying aspects of human faces such as gender, age, type of expression and skin colour
@@ -60,25 +68,20 @@ Classifying aspects of human faces such as gender, age, type of expression and s
 [[./face_gender.png]]
 
 *** 
-One of the earliest uses for supervised machine  learning was reading the zip code in postal mail.[fn:3]
-We'll use this a starting example to try Cortex.
+One of the early successes for supervised machine learning was reading [[http://yann.lecun.com/exdb/publis/pdf/matan-92.pdf][the zip code]] in postal mail.
 
 #+CAPTION: Handwritten digits  
     [[./MNIST.png]] 
-
-[fn:3] http://yann.lecun.com/exdb/publis/pdf/matan-92.pdf
 
 * Neural Networks
 
 Why are NNs popular?
 
-- Many classifications algorithms exist (e.g. SVM, nearest neighbours, Random Forest)
-- NNs offer state of the art performance in several classification tasks[fn:4]. 
-  - (0.21% error rate on MNIST, close to or better than human performance)
-- Composable abstractions (different layers can be combined and computations are straightforward, thanks to the back propogation algorithm)
-- Distributed learning is feasible. 
-
-[fn:4] http://rodrigob.github.io/are_we_there_yet/build/classification_datasets_results.html#4d4e495354
+- NNs offer state of the art performance in several classification tasks. 
+  - 0.21% [[http://rodrigob.github.io/are_we_there_yet/build/classification_datasets_results.html#4d4e495354][error rate]] on MNIST, close to or better than human performance
+- Composable abstractions 
+  - different layers can be combined in a [[http://colah.github.io/posts/2014-07-Conv-Nets-Modular/][modular fashion]] and computations are straightforward
+- Distributed learning is feasible / GPUs enabled several breakthroughs 
 
 *** Composability
 
@@ -89,10 +92,39 @@ Why are NNs popular?
 
        [[./example_captions.jpg]]
 
+*** Architecture of feedforward networks
+
+- A feedforward network is one where units do not form a cycle.
+- Networks contain 1 input, 1 output and one or more hidden layers
+- According to the [[https://en.wikipedia.org/wiki/Universal_approximation_theorem][Universal approximation theorem]] just one hidden layer is enough
+  - But may not be optimal for learning 
+
+#+CAPTION: Feedforward network with hidden layers
+
+[[./feedforward.jpg]]
+
+*** Weights in a network 
+
+- Each of the connections between layers has a weight attached to it.
 
 
-* Cortex
+#+CAPTION: hidden layer weights
 
+[[./weights.png]]
+
+*** Transfer function
+
+- Activation function combines the inputs 
+- Transfer function modifies the scalar output (e.g. squashes it)
+- The terms activation/transfer function used interchangeably.
+
+#+:CAPTION: transformation
+
+[[./neuron_model.jpeg]]
+
+[[http://cs231n.github.io/neural-networks-1/][link]]
+
+** Cortex
 
 The [[https://github.com/thinktopic/cortex][Cortex library]] is a relatively recent library that implements Neural Networks in pure Clojure.
 
@@ -101,14 +133,67 @@ Features:
 2. Supports popular network types (Feedforward/CNNs) 
 3. Model serialization supported in multiple formats (edn/nippy)
 4. Fairly active (~900 commits/11 releases/24 contributors)
-* Why Tensorboard
+
+*** Network definition
+
+- A Cortex network is vector consisting of layer definitions
+
+#+BEGIN_SRC clojure
+(def network 
+[(layers/input 2 1 1 :id :data)
+   (layers/linear 1 :weights [[-0.2 0.2]])
+   (layers/logistic :id :labels)])
+#+END_SRC 
+
+- Each element is a layer
+
+*** Loan dataset
+
+- Simulated dataset with 10000 observations on the following 4 variables. 
+- The aim here is to predict which customers will default on their credit card debt
+  - *default* A factor with levels No and Yes indicating whether the customer defaulted on their debt
+  - *student* A factor with levels No and Yes indicating whether the customer is a student
+  - *balance* The average balance that the customer has remaining on their credit card after making their monthly payment
+  - *income* Income of customer
+
+*** Read the dataset
 
 #+BEGIN_SRC clojure
 
-(let [a 1000 
-b 20]
-(+ a b))
+ (->> "test/data/default.csv"
+      (slurp)
+      (s/split-lines)
+      (rest)                                     ;; ignore the header row
+      (map (fn [l] (drop 2 (s/split l #"," ))))  ;; ignore id, student cols
+      (mapv (fn [[^String default ^String balance ^String income]]
+             {:data [(Double. balance) (Double. income)]
+              :labels (if (= default "\"Yes\"") [1.0] [0.0])}))))
 
 #+END_SRC
 
+*** 
+- Dataset consists of vector of 10k instances
+- Each instance is a map with :data and :labels
+
+
+*** Shape of the network
+
+#+BEGIN_SRC clojure
+
+(def description
+  [(layers/input 2 1 1 :id :data)
+   ;;width height channels & args
+   ;;Fix the weights to make the unit test work.
+   (layers/linear 1 :weights [[-0.2 0.2]])
+   (layers/logistic :id :labels)])
+   
+#+END_SRC
+
 *  
+** Why Tensorboard
+
+Problems in training NNs
+
+- Exploding gradient
+- Vanishing gradient [[https://www.quora.com/What-is-the-vanishing-gradient-problem][problem]]
+

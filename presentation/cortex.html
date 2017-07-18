@@ -26,49 +26,62 @@
 <body>
 <div class="reveal">
 <div class="slides">
-<section id="sec-title-slide"><h1 class="title">Neural Networks in Clojure with Cortex and Tensorboard</h1><h2 class="author">Kiran Karkera</h2><p class="date">Created: 2017-07-15 Sat 13:48</p>
+<section id="sec-title-slide"><h1 class="title">Neural Networks in Clojure with Cortex and Tensorboard</h1><h2 class="author">Kiran Karkera</h2><p class="date">Created: 2017-07-15 Sat 22:58</p>
 </section>
 <section id="table-of-contents">
 <div id="table-of-contents">
 <h2>Table of Contents</h2>
 <div id="text-table-of-contents">
 <ul>
-<li><a href="#/slide-orgd3807c2">Why NNs in Clojure</a></li>
-<li><a href="#/slide-orgf5e3b90">Machine Learning digression</a>
+<li><a href="#/slide-orgb4a8aea">Why NNs in Clojure</a></li>
+<li><a href="#/slide-orgb53b3e2">Machine Learning digression</a>
 <ul>
 <li>
 <ul>
-<li><a href="#/slide-org2399279">Supervised machine learning:</a></li>
+<li><a href="#/slide-org9accda8">Supervised machine learning:</a></li>
 </ul>
 </li>
-<li><a href="#/slide-org2d13416">Uses of Supervised learning</a>
+<li><a href="#/slide-org53b6708">Uses of Supervised learning</a>
 <ul>
-<li><a href="#/slide-orgaef7b9f"></a></li>
-<li><a href="#/slide-org576ebac"></a></li>
+<li><a href="#/slide-org947f06a"></a></li>
+<li><a href="#/slide-org988c0b9"></a></li>
 </ul>
 </li>
 </ul>
 </li>
-<li><a href="#/slide-orgf4dc237">Neural Networks</a>
+<li><a href="#/slide-org200bbcd">Neural Networks</a>
 <ul>
 <li>
 <ul>
-<li><a href="#/slide-orgb5a215b">Composability</a></li>
+<li><a href="#/slide-orgcee68b5">Composability</a></li>
 </ul>
 </li>
 </ul>
 </li>
-<li><a href="#/slide-orgf9f53fe">Cortex</a></li>
-<li><a href="#/slide-orgad25973">Why Tensorboard</a></li>
-<li><a href="#/slide-org2cd5030"></a></li>
+<li><a href="#/slide-org78a6cf0">Cortex</a>
+<ul>
+<li>
+<ul>
+<li><a href="#/slide-org599fe34">Loan dataset</a></li>
+<li><a href="#/slide-orgcefbb8a">Read the dataset</a></li>
+<li><a href="#/slide-orgf40b5eb"></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="#/slide-org733d679"></a>
+<ul>
+<li><a href="#/slide-org16d542c">Why Tensorboard</a></li>
+</ul>
+</li>
 </ul>
 </div>
 </div>
 </section>
 
 <section>
-<section id="slide-orgd3807c2">
-<h2 id="orgd3807c2">Why NNs in Clojure</h2>
+<section id="slide-orgb4a8aea">
+<h2 id="orgb4a8aea">Why NNs in Clojure</h2>
 <p>
 A data science pipeline comprises of tasks such as
 </p>
@@ -94,12 +107,12 @@ To use a NN toolkit in a different language (such as Python) requires clunky cro
 </section>
 </section>
 <section>
-<section id="slide-orgf5e3b90">
-<h2 id="orgf5e3b90">Machine Learning digression</h2>
-<div class="outline-text-2" id="text-orgf5e3b90">
+<section id="slide-orgb53b3e2">
+<h2 id="orgb53b3e2">Machine Learning digression</h2>
+<div class="outline-text-2" id="text-orgb53b3e2">
 </div></section>
-<section id="slide-org2399279">
-<h4 id="org2399279">Supervised machine learning:</h4>
+<section id="slide-org9accda8">
+<h4 id="org9accda8">Supervised machine learning:</h4>
 <blockquote nil>
 <p>
 When you are a kid<sup><a id="fnr.1" class="footref" href="#fn.1">1</a></sup> and you see different types of animals, your father tells you that this particular animal is a dog. After doing this a few times, 
@@ -114,8 +127,8 @@ you see a new type of dog that you never saw before - you identify it as a dog a
 </div>
 
 </section>
-<section id="slide-org2d13416">
-<h3 id="org2d13416">Uses of Supervised learning</h3>
+<section id="slide-org53b6708">
+<h3 id="org53b6708">Uses of Supervised learning</h3>
 <p>
 What can supervised learning be used for?
 </p>
@@ -132,8 +145,8 @@ Training on 25,000 images of dogs and cats, the leading teams got to 98.9% accur
 </div>
 
 </section>
-<section id="slide-orgaef7b9f">
-<h4 id="orgaef7b9f"></h4>
+<section id="slide-org947f06a">
+<h4 id="org947f06a"></h4>
 <p>
 Classifying aspects of human faces such as gender, age, type of expression and skin colour
 </p>
@@ -145,8 +158,8 @@ Classifying aspects of human faces such as gender, age, type of expression and s
 </div>
 
 </section>
-<section id="slide-org576ebac">
-<h4 id="org576ebac"></h4>
+<section id="slide-org988c0b9">
+<h4 id="org988c0b9"></h4>
 <p>
 One of the earliest uses for supervised machine  learning was reading the zip code in postal mail.<sup><a id="fnr.3" class="footref" href="#fn.3">3</a></sup>
 We'll use this a starting example to try Cortex.
@@ -162,8 +175,8 @@ We'll use this a starting example to try Cortex.
 </section>
 </section>
 <section>
-<section id="slide-orgf4dc237">
-<h2 id="orgf4dc237">Neural Networks</h2>
+<section id="slide-org200bbcd">
+<h2 id="org200bbcd">Neural Networks</h2>
 <p>
 Why are NNs popular?
 </p>
@@ -175,14 +188,18 @@ Why are NNs popular?
 <li>(0.21% error rate on MNIST, close to or better than human performance)</li>
 
 </ul></li>
-<li>Composable abstractions (different layers can be combined and computations are straightforward, thanks to the back propogation algorithm)</li>
-<li>Distributed learning is feasible.</li>
+<li>Composable abstractions 
+<ul>
+<li>different layers can be combined and computations are straightforward<sup><a id="fnr.5" class="footref" href="#fn.5">5</a></sup></li>
+
+</ul></li>
+<li>Distributed learning is feasible / GPUs enabled several breakthroughs</li>
 
 </ul>
 
 </section>
-<section id="slide-orgb5a215b">
-<h4 id="orgb5a215b">Composability</h4>
+<section id="slide-orgcee68b5">
+<h4 id="orgcee68b5">Composability</h4>
 <ul>
 <li>Composability extends to different domains 
 <ul>
@@ -198,13 +215,11 @@ Why are NNs popular?
 </p>
 </div>
 
-
-
 </section>
 </section>
 <section>
-<section id="slide-orgf9f53fe">
-<h2 id="orgf9f53fe">Cortex</h2>
+<section id="slide-org78a6cf0">
+<h2 id="org78a6cf0">Cortex</h2>
 <p>
 The <a href="https://github.com/thinktopic/cortex">Cortex library</a> is a relatively recent library that implements Neural Networks in pure Clojure.
 </p>
@@ -219,25 +234,73 @@ Features:
 <li>Fairly active (~900 commits/11 releases/24 contributors)</li>
 
 </ol>
+
 </section>
+<section id="slide-org599fe34">
+<h4 id="org599fe34">Loan dataset</h4>
+<ul>
+<li>Simulated dataset with 10000 observations on the following 4 variables.</li>
+<li>The aim here is to predict which customers will default on their credit card debt
+<ul>
+<li><b>default</b> A factor with levels No and Yes indicating whether the customer defaulted on their debt</li>
+<li><b>student</b> A factor with levels No and Yes indicating whether the customer is a student</li>
+<li><b>balance</b> The average balance that the customer has remaining on their credit card after making their monthly payment</li>
+<li><b>income</b> Income of customer</li>
+
+</ul></li>
+
+</ul>
+
 </section>
-<section>
-<section id="slide-orgad25973">
-<h2 id="orgad25973">Why Tensorboard</h2>
+<section id="slide-orgcefbb8a">
+<h4 id="orgcefbb8a">Read the dataset</h4>
 <div class="org-src-container">
 
-<pre  class="src src-clojure"><span style="color: #4f97d7;">(</span><span style="color: #4f97d7; font-weight: bold;">let</span> <span style="color: #bc6ec5;">[</span>a <span style="color: #a45bad;">1000</span> 
-b <span style="color: #a45bad;">20</span><span style="color: #bc6ec5;">]</span>
-<span style="color: #bc6ec5;">(</span>+ a b<span style="color: #bc6ec5;">)</span><span style="color: #4f97d7;">)</span>
+<pre  class="src src-clojure"><span style="color: #4f97d7;">(</span><span style="color: #4f97d7; font-weight: bold;">-&gt;&gt;</span> <span style="color: #2d9574;">"test/data/default.csv"</span>
+     <span style="color: #bc6ec5;">(</span>slurp<span style="color: #bc6ec5;">)</span>
+     <span style="color: #bc6ec5;">(</span><span style="color: #ce537a; font-weight: bold;">s</span><span style="color: #b2b2b2; background-color: #292b2e;">/</span>split-lines<span style="color: #bc6ec5;">)</span>
+     <span style="color: #bc6ec5;">(</span>rest<span style="color: #bc6ec5;">)</span>                                     <span style="color: #2aa1ae; background-color: #292e34;">;; </span><span style="color: #2aa1ae; background-color: #292e34;">ignore the header row</span>
+     <span style="color: #bc6ec5;">(</span>map <span style="color: #2d9574;">(</span><span style="color: #4f97d7; font-weight: bold;">fn</span> <span style="color: #67b11d;">[</span>l<span style="color: #67b11d;">]</span> <span style="color: #67b11d;">(</span>drop <span style="color: #a45bad;">2</span> <span style="color: #b1951d;">(</span><span style="color: #ce537a; font-weight: bold;">s</span><span style="color: #b2b2b2; background-color: #292b2e;">/</span>split l #<span style="color: #2d9574;">","</span> <span style="color: #b1951d;">)</span><span style="color: #67b11d;">)</span><span style="color: #2d9574;">)</span><span style="color: #bc6ec5;">)</span>  <span style="color: #2aa1ae; background-color: #292e34;">;; </span><span style="color: #2aa1ae; background-color: #292e34;">ignore id, student cols</span>
+     <span style="color: #bc6ec5;">(</span>mapv <span style="color: #2d9574;">(</span><span style="color: #4f97d7; font-weight: bold;">fn</span> <span style="color: #67b11d;">[</span><span style="color: #b1951d;">[</span>^<span style="color: #ce537a; font-weight: bold;">String</span> default ^<span style="color: #ce537a; font-weight: bold;">String</span> balance ^<span style="color: #ce537a; font-weight: bold;">String</span> income<span style="color: #b1951d;">]</span><span style="color: #67b11d;">]</span>
+            <span style="color: #67b11d;">{</span><span style="color: #a45bad;">:data</span> <span style="color: #b1951d;">[</span><span style="color: #4f97d7;">(</span><span style="color: #ce537a; font-weight: bold;">Double.</span> balance<span style="color: #4f97d7;">)</span> <span style="color: #4f97d7;">(</span><span style="color: #ce537a; font-weight: bold;">Double.</span> income<span style="color: #4f97d7;">)</span><span style="color: #b1951d;">]</span>
+             <span style="color: #a45bad;">:labels</span> <span style="color: #b1951d;">(</span><span style="color: #4f97d7; font-weight: bold;">if</span> <span style="color: #4f97d7;">(</span>= default <span style="color: #2d9574;">"</span><span style="color: #2d9574; font-weight: bold;">\"</span><span style="color: #2d9574;">Yes</span><span style="color: #2d9574; font-weight: bold;">\"</span><span style="color: #2d9574;">"</span><span style="color: #4f97d7;">)</span> <span style="color: #4f97d7;">[</span><span style="color: #a45bad;">1.0</span><span style="color: #4f97d7;">]</span> <span style="color: #4f97d7;">[</span><span style="color: #a45bad;">0.0</span><span style="color: #4f97d7;">]</span><span style="color: #b1951d;">)</span><span style="color: #67b11d;">}</span><span style="color: #2d9574;">)</span><span style="color: #bc6ec5;">)</span><span style="color: #4f97d7;">)</span><span style="color: #e0211d; text-decoration: overline;">)</span>
 
+</pre>
+</div>
+
+</section>
+<section id="slide-orgf40b5eb">
+<h4 id="orgf40b5eb"></h4>
+<ul>
+<li>Dataset consists of vector of 10k instances</li>
+<li>Each instance is a map with :data and :labels</li>
+
+</ul>
+
+<div class="org-src-container">
+
+<pre  class="src src-clojure">
 </pre>
 </div>
 
 </section>
 </section>
 <section>
-<section id="slide-org2cd5030">
-<h2 id="org2cd5030"></h2>
+<section id="slide-org733d679">
+<h2 id="org733d679"></h2>
+<div class="outline-text-2" id="text-org733d679">
+</div></section>
+<section id="slide-org16d542c">
+<h3 id="org16d542c">Why Tensorboard</h3>
+<p>
+Problems in training NNs
+</p>
+
+<ul>
+<li>Exploding gradient</li>
+<li>Vanishing gradient <a href="https://www.quora.com/What-is-the-vanishing-gradient-problem">problem</a></li>
+
+</ul>
 </section>
 </section>
 </div>
