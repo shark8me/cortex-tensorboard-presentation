@@ -2,13 +2,14 @@
 #+REVEAL_ROOT: http://cdn.jsdelivr.net/reveal.js/3.0.0/
 #+TITLE: Neural Networks in Clojure with Cortex and Tensorboard
 #+AUTHOR: Kiran Karkera
-#+GITHUB: kirank.in
+#+EMAIL: kiran.karkera@gmail.com
 #+REVEAL_THEME: night
 #+STARTUP: overview
 #+STARTUP: content
 #+STARTUP: showall
 #+STARTUP: showeverything
 #+OPTIONS: num:nil
+#+OPTIONS: toc:0
 
 * Why NNs in Clojure
 
@@ -19,63 +20,69 @@
 - Model training and evaluation 
 - Using trained model for inference 
 
-Clojure (+Java) libraries are quite capable at all of the above, including (non-neural network) machine learning toolkits 
-To use a NN toolkit in a different language (such as Python) requires clunky cross-language interactions. 
+***  
+- Clojure (+Java) libraries are quite capable in all parts of the pipeline 
+- Excellent support for (non-neural network) machine learning toolkits 
+- Using a NN toolkit in a different language (such as Python) requires clunky cross-language interactions. 
+- Cortex fills an  important need 
+  - Pure Clojure NN toolkit
 
 *** Exceptions 
 
 - Pretrained networks available for the task 
   - Relevant when training network from scratch can take weeks 
 
-**** Alternatives:
-- Train in a different toolset, inference in Clojure/Java
-  - For example train in Tensorflow, and use trained network from Java or Clojure
- 
-[[https://arxiv.org/pdf/1608.07249v7.pdf][Benchmarking deep learning tools]]
+*** Alternatives:
 
++ Data collection, preparation, training in Clojure
++ Train in a different toolset, inference in Clojure/Java
+  - For example, train in Tensorflow / DeepLearningForJ, 
+  - Use trained network for inference from Java or Clojure
+ 
 * Machine Learning digression
 
 *** Supervised machine learning:
 
 #+BEGIN_QUOTE
-When you are a kid[fn:1] and you see different types of animals, your father tells you that this particular animal is a dog. After doing this a few times, 
+When you are a kid and you see different types of animals, your father tells you that this particular animal is a dog. After doing this a few times, 
 you see a new type of dog that you never saw before - you identify it as a dog and not as a cat or a monkey or a potato.
 #+END_QUOTE
 
+[[https://www.quora.com/What-is-the-difference-between-supervised-and-unsupervised-learning-algorithms/answer/Shehroz-Khan-2?srid=o0Wh][Quora post reference]]
 #+CAPTION: Dogs vs cats
 
-[[./woof_meow.jpg]]
+[[./images/woof_meow.jpg]]
 
-[fn:1] https://www.quora.com/What-is-the-difference-between-supervised-and-unsupervised-learning-algorithms/answer/Shehroz-Khan-2?srid=o0Wh
 
-** Uses of Supervised learning 
+** Applications of Supervised learning 
 
-What can supervised learning be used for?
 
-A Kaggle competition to distinguish between cats and dogs was conducted in 2014.
-Training on 25,000 images of dogs and cats, the leading teams got to 98.9% [[https://www.kaggle.com/c/dogs-vs-cats/leaderboard][accuracy]]. 
+- A Kaggle competition to distinguish between cats and dogs was conducted in 2014.
+- Training on 25,000 images of dogs and cats, 
+  - the leading teams got to 98.9% [[https://www.kaggle.com/c/dogs-vs-cats/leaderboard][accuracy]]. 
 
 #+CAPTION: Differentiating between dogs and cats
 
-[[./cat_or_dog.jpg]]
+#+ATTR_HTML: :height 80%, width 80%
+[[./images/cat_or_dog.jpg]]
 
 
 *** 
-Classifying aspects of human faces such as gender, age, type of expression and skin colour
+
+- Classifying aspects of human faces such as gender, age, type of expression and skin colour
 
 #+CAPTION: Classifying gender, age and skin colour
 
-[[./face_gender.png]]
+[[./images/face_gender.png]]
 
 *** 
-One of the early successes for supervised machine learning was reading [[http://yann.lecun.com/exdb/publis/pdf/matan-92.pdf][the zip code]] in postal mail.
+
+- One of the early successes for supervised machine learning was reading [[http://yann.lecun.com/exdb/publis/pdf/matan-92.pdf][the zip code]] in postal mail.
 
 #+CAPTION: Handwritten digits  
-    [[./MNIST.png]] 
+    [[./images/MNIST.png]] 
 
-* Neural Networks
-
-Why are NNs popular?
+* Why are Neural Networks popular?
 
 - NNs offer state of the art performance in several classification tasks. 
   - 0.21% [[http://rodrigob.github.io/are_we_there_yet/build/classification_datasets_results.html#4d4e495354][error rate]] on MNIST, close to or better than human performance
@@ -83,25 +90,32 @@ Why are NNs popular?
   - different layers can be combined in a [[http://colah.github.io/posts/2014-07-Conv-Nets-Modular/][modular fashion]] and computations are straightforward
 - Distributed learning is feasible / GPUs enabled several breakthroughs 
 
-*** Composability
+*** Flexibility
+
+- NNs can accommodate several outputs:
+  - Single target classification (e.g. Spam classification)
+  - Multi target classification (e.g multiple objects in an image)
+  - Sequences (e.g. sentence generation)
 
 - Composability extends to different domains 
-  - (e.g the im2txt model, which takes an image as input and returns a text description as output). 
+  - (e.g the [[https://github.com/tensorflow/models/tree/master/im2txt][im2txt]] model, which takes an image as input and returns a text description as output). 
 
+#+REVEAL: split
 #+CAPTION: im2txt network provides descriptions of images
 
-       [[./example_captions.jpg]]
+#+ATTR_HTML: :height 60%, width 80%
+       [[./images/example_captions.jpg]]
 
 *** Architecture of feedforward networks
 
 - A feedforward network is one where units do not form a cycle.
-- Networks contain 1 input, 1 output and one or more hidden layers
+- Networks contain 1 input layer, 1 output layer and one or more hidden layers
 - According to the [[https://en.wikipedia.org/wiki/Universal_approximation_theorem][Universal approximation theorem]] just one hidden layer is enough
   - But may not be optimal for learning 
 
 #+CAPTION: Feedforward network with hidden layers
 
-[[./feedforward.jpg]]
+[[./images/feedforward.jpg]]
 
 *** Weights in a network 
 
@@ -110,7 +124,7 @@ Why are NNs popular?
 
 #+CAPTION: hidden layer weights
 
-[[./weights.png]]
+[[./images/weights.png]]
 
 *** Transfer function
 
@@ -120,34 +134,214 @@ Why are NNs popular?
 
 #+:CAPTION: transformation
 
-[[./neuron_model.jpeg]]
+[[./images/neuron_model.jpeg]]
 
 [[http://cs231n.github.io/neural-networks-1/][link]]
 
-** Cortex
+* Cortex
 
 The [[https://github.com/thinktopic/cortex][Cortex library]] is a relatively recent library that implements Neural Networks in pure Clojure.
 
-Features:
+*Features*:
+
 1. Multiple backends (GPU and CPU) 
 2. Supports popular network types (Feedforward/CNNs) 
+   - Other types of cells (e.g. GRU/LSTM) can be implemented
 3. Model serialization supported in multiple formats (edn/nippy)
 4. Fairly active (~900 commits/11 releases/24 contributors)
 
-*** Network definition
 
+*** Steps to create, train and do inference with Cortex
+
+- Define a network with input, output and hidden layers
+- Create train / test datasets
+- Create a listener if required
+- Train the classifier using the /perform-experiment/ or /train-n/ API
+  - While training, evaluate performance of key metrics
+- Run inference on test instances
+ 
+*** Network definition
+    
 - A Cortex network is vector consisting of layer definitions
+- Arguments depend on the type of layers
+- First layer is the input, last is output, rest are hidden layers
 
 #+BEGIN_SRC clojure
 (def network 
-[(layers/input 2 1 1 :id :data)
+  [(layers/input 2 1 1 :id :data)
    (layers/linear 1 :weights [[-0.2 0.2]])
    (layers/logistic :id :labels)])
 #+END_SRC 
 
-- Each element is a layer
+*** Layer examples
 
-*** Loan dataset
+- Input layer takes the shape of the x, y and z axes of a cube
+ 
+#+BEGIN_SRC clojure
+;; Example Input layer for a 28 x 28 pixel monochrome image 
+
+(layers/input 28 28 1 :id :data)
+
+;; Input layer for 2 scalar inputs, rest of the dimensions are set to 1 
+(layers/input 2 1 1 :id :data)
+#+END_SRC
+
+*** Hidden layers
+
+#+BEGIN_SRC clojure
+;;- Linear layer with 1 hidden unit  
+(layers/linear 1)
+
+;;dropout  layer
+;;argument is the probability of surviving, value of 1 means no dropout
+(layers/dropout 0.75)
+
+;;batch normalization
+(layers/batch-normalization)
+#+END_SRC 
+
+*** Softmax output layer 
+
+#+BEGIN_SRC clojure
+
+;;pre-final linear layer with 1 output
+(layers/linear 1)
+;;output is a bernoulli distribution (probability of 1 or 0)
+(layers/logistic :id :labels)
+
+;;;;;;;
+;;pre-final linear layer with 10 outputs
+(layers/linear 10)
+;;output the probabilities of 10 outcomes 
+(layers/softmax :id :labels)
+#+END_SRC 
+
+
+*** Creating train (and test) datasets 
+
+- Dataset is a vector of training instances
+- Each training instance is a map with 2 keys
+
+#+BEGIN_SRC clojure
+;;2 training instances
+[{:data [0.9 0.1] :labels [1.0]}
+ {:data [0.1 0.1] :labels [0.0]}]
+#+END_SRC 
+
+
+*** Create a listener (if required)
+
+Why create a listener? 
+- To observe progress of training
+- To stop training when performance is optimal
+- To checkpoint/save network state at 
+  - Fixed number of iterations (e.g 1 million, 2 million )
+  - Accuracy milestones (e.g. 80%, 85%)
+
+#+REVEAL: split
+
+**** Default listener
+
+- Live updates on a local webserver
+- Creates png images from training instances to observe training progress
+
+#+BEGIN_SRC clojure
+(:require [cortex.experiment.classification :as cls])
+
+(defn create-listener
+  "initializes any prerequisites for listening functions, and returns a listener
+  function. Arguments:
+  - observation->image-fn: A function that can take observation data and return png data for web display.
+    - class-mapping: A map with two entries
+      - `:class-name->index` a map from class name strings to softmax indexes
+      - `:index->class-name` a map from softmax indexes to class name strings
+   Trains the net indefinitely on the provided training data, evaluating against the test data, 
+  and gives live updates on a local webserver hosted at http://localhost:8091."  
+  [observation->image-fn class-mapping argmap]
+  ;;... 
+  )
+
+ ;;example for MNIST
+ (cls/create-listener mnist-observation->image class-mapping args)  
+#+END_SRC 
+
+#+REVEAL: split
+#+CAPTION: Confusion matrix 
+
+[[./images/confmat.png]]
+
+#+REVEAL: split
+#+CAPTION: Sample images from train/test set 
+
+[[./images/mnistdataset.png]]
+
+*** Digression: Tensorboard
+
+- [[https://www.tensorflow.org/get_started/summaries_and_tensorboard][Tensorboard]] is a suite of visualization tools to understand, debug and optimize Tensorflow
+- Users can view plots of   
+  - Scalar metrics such as Accuracy/ error / F1 score
+  - Tensor metrics such as weights, biases 
+  - Histograms of metric's progressions over time.
+- Can help debug training problems such as the vanishing gradient [[https://www.quora.com/What-is-the-vanishing-gradient-problem][problem]]
+
+#+REVEAL: split
+
+#+CAPTION: Tensorboard scalar metrics
+
+[[./images/tb-stats.png]] 
+
+
+*** Tensorboard listener
+
+- Listen for Cortex events and convert it to Tensorboard compatible events 
+- Out of the box support for 
+  - train loss and cross validation loss
+  - weight and bias histograms
+
+*** Usage:
+
++ Pass a map with the file name to log events to 
+  - (Note: it need to have "tfevents.*" as part of the name)
+
+#+BEGIN_SRC clojure
+(:require [cortex.experiment.classification :as cls])
+   (cls/create-tensorboard-listener
+                   ;;file name should include "tfevents"
+                   {:file-path "/tmp/tflogs/linear/tfevents.linear.out"})
+
+;;launch tensorboard with log path
+;;tensorboard --logdir=/tmp/tflogs
+#+END_SRC 
+
+*** Train the model
+
+- Using the cortex.experiment.classification/perform-experiment API 
+- Specify additional options such as number of [[https://stackoverflow.com/a/31842945/845843][epochs ]] 
+  - If :epoch-count not provided, it trains forever
+
+#+BEGIN_SRC clojure
+(:require [cortex.experiment.classification :as cls])
+    (cls/perform-experiment description train-ds test-ds
+                            listener
+                            {:epoch-count 10})
+#+END_SRC 
+
+*** Perform inference
+
+#+BEGIN_SRC clojure
+(:require [cortex.nn.execute :as execute]
+          [cortex.experiment.train :as train]
+          [cortex.nn.network :as network])
+
+(let [trained-network (train/load-network "trained-network.nippy")
+      input-data [{:data [5000.0 10.0]} 
+                  {:data [5.0 100000.0]}]]
+    (->> (execute/run trained-network input-data)
+         (map :labels)))
+
+#+END_SRC 
+
+* Training on the loan dataset
 
 - Simulated dataset with 10000 observations on the following 4 variables. 
 - The aim here is to predict which customers will default on their credit card debt
@@ -157,6 +351,9 @@ Features:
   - *income* Income of customer
 
 *** Read the dataset
+
+- Dataset consists of vector of 10k instances
+- Each instance is a map with :data and :labels
 
 #+BEGIN_SRC clojure
 
@@ -171,12 +368,9 @@ Features:
 
 #+END_SRC
 
-*** 
-- Dataset consists of vector of 10k instances
-- Each instance is a map with :data and :labels
+*** Define the network
 
-
-*** Shape of the network
++ Define input and output layers along with 1 hidden layer
 
 #+BEGIN_SRC clojure
 
@@ -189,11 +383,37 @@ Features:
    
 #+END_SRC
 
-*  
-** Why Tensorboard
+*** Run training
 
-Problems in training NNs
+#+BEGIN_SRC clojure
 
-- Exploding gradient
-- Vanishing gradient [[https://www.quora.com/What-is-the-vanishing-gradient-problem][problem]]
+(let [ds (shuffle (logtest/default-dataset))
+        ds-count (count ds)
+        ;;do a 90-10 split into train/test
+        cutoff (int (* 0.9 ds-count))
+        train-ds (take cutoff ds)
+        test-ds (drop cutoff ds)
+        listener (cls/create-tensorboard-listener
+                   {:file-path "/tmp/tflogs/linear/tfevents.linear.out"})]
+    (cls/perform-experiment description train-ds test-ds
+                            listener
+                            ;;run for 10 training epochs
+                            {:epoch-count 10}))
+   
+#+END_SRC
+
+* Demo
+
+
+* Resources
+
+- Cortex project @ Github
+- Tensorboard documentation
+- tfevent-sink project @ Github  
+- This presentation (html) and the org-mode source.
+
+
+** Thanks to
+
+- Team that created Cortex 
 
