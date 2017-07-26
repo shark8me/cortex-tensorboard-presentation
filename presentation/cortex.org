@@ -404,13 +404,52 @@ Why create a listener?
 
 * Demo
 
+*** Logistic demo
+
+#+BEGIN_SRC sh
+#assumes pwd is cortex root folder
+#checkout the latest tag
+git checkout v0.9.11
+cd experiment/
+#create output folder for log files
+mkdir /tmp/tflogs
+#run test that compares performance of 4 different networks
+lein test :only cortex.experiment.tensorboard-test
+
+#docker
+#load the latest tensorflow instance to load files from /tmp/tflogs
+#this is mounted on the docker instance at the /tflogs folder
+docker run -it -p 8888:8888 --entrypoint "/bin/bash" -v /tmp/tflogs/:/tflogs tensorflow/tensorflow
+#to get IP address of container 
+docker inspect -f '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}'
+#returns dockerip
+#+END_SRC
+
+#+REVEAL: split
+
+Inside the docker container, execute 
+#+BEGIN_SRC sh
+tensorboard --port 8888 --logdir=/tflogs
+#+END_SRC
+
+Navigate to http://dockerip:8888 
+
+*** MNIST demo
+
+#+BEGIN_SRC sh
+cd examples/mnist-classification
+mkdir /tmp/tflogs/mnist
+lein run --tensorboard-output /tmp/tflogs/mnist/mnist.tfevents.out
+
+#+END_SRC
 
 * Resources
 
-- Cortex project @ Github
-- Tensorboard documentation
-- tfevent-sink project @ Github  
-- This presentation (html) and the org-mode source.
+- [[https://github.com/thinktopic/cortex][Cortex project @ Github]]
+- [[https://www.tensorflow.org/get_started/summaries_and_tensorboard][Tensorboard documentation]]
+- [[https://github.com/shark8me/tfevent-sink][tfevent-sink project @ Github]]
+  - This project converts Cortex events to Tensorflow compatible events
+- This presentation ([[https://github.com/shark8me/cortex-tensorboard-presentation/blob/master/presentation/cortex.html][html]]) and the [[https://github.com/shark8me/cortex-tensorboard-presentation/blob/master/presentation/cortex.org][org-mode source]].
 
 
 ** Thanks to
