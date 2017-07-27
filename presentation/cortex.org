@@ -1,8 +1,10 @@
 
 #+REVEAL_ROOT: http://cdn.jsdelivr.net/reveal.js/3.0.0/
-#+TITLE: Neural Networks in Clojure with Cortex and Tensorboard
-#+AUTHOR: Kiran Karkera
+#+TITLE:  Introduction to Cortex
+#+AUTHOR: Kiran Karkera 
 #+EMAIL: kiran.karkera@gmail.com
+#+GITHUB: shark8me
+#+TWITTER: kaal_daari
 #+REVEAL_THEME: night
 #+STARTUP: overview
 #+STARTUP: content
@@ -10,8 +12,12 @@
 #+STARTUP: showeverything
 #+OPTIONS: num:nil
 #+OPTIONS: toc:0
+#+OPTIONS: org-reveal-title-slide:%t %a %e
+# #+REVEAL_MARGIN: 0.2
+#+REVEAL_MAX_SCALE: 5 
+# * An introduction to Cortex
 
-* Why NNs in Clojure
+* Neural Networks in Clojure
 
  A machine learning task's pipeline comprises of the following tasks 
 
@@ -34,36 +40,47 @@
 
 *** Alternatives:
 
-+ Data collection, preparation, training in Clojure
++ Data collection, preparation, cleaning in Clojure
 + Train in a different toolset, inference in Clojure/Java
-  - For example, train in Tensorflow / DeepLearningForJ, 
+  - For example, train in Tensorflow / DeepLearning4J 
   - Use trained network for inference from Java or Clojure
  
-* Machine Learning digression
+* Machine Learning Digression
 
-*** Supervised machine learning:
+*** Supervised Machine Learning:
 
 #+BEGIN_QUOTE
 When you are a kid and you see different types of animals, your father tells you that this particular animal is a dog. After doing this a few times, 
 you see a new type of dog that you never saw before - you identify it as a dog and not as a cat or a monkey or a potato.
 #+END_QUOTE
 
-[[https://www.quora.com/What-is-the-difference-between-supervised-and-unsupervised-learning-algorithms/answer/Shehroz-Khan-2?srid=o0Wh][Quora post reference]]
 #+CAPTION: Dogs vs cats
 
 [[./images/woof_meow.jpg]]
 
 
-** Applications of Supervised learning 
+[[https://www.quora.com/What-is-the-difference-between-supervised-and-unsupervised-learning-algorithms/answer/Shehroz-Khan-2?srid=o0Wh][Quora post reference]]
+
+** Applications of Supervised Learning 
 
 
+#+REVEAL: split
+- One of the early successes for supervised machine learning was reading [[http://yann.lecun.com/exdb/publis/pdf/matan-92.pdf][the zip code]] in postal mail.
+- Dataset called MNIST is a benchmark dataset in machine learning
+
+#+CAPTION: Handwritten digits  
+    [[./images/MNIST.png]] 
+
+#+REVEAL: split
 - A Kaggle competition to distinguish between cats and dogs was conducted in 2014.
 - Training on 25,000 images of dogs and cats, 
   - the leading teams got to 98.9% [[https://www.kaggle.com/c/dogs-vs-cats/leaderboard][accuracy]]. 
+- [[ ][Here's]] the classifier implemented in Cortex.
 
+#+REVEAL: split
 #+CAPTION: Differentiating between dogs and cats
 
-#+ATTR_HTML: :height 80%, width 80%
+#+ATTR_HTML: :height 50%, :width 50%
 [[./images/cat_or_dog.jpg]]
 
 
@@ -75,20 +92,14 @@ you see a new type of dog that you never saw before - you identify it as a dog a
 
 [[./images/face_gender.png]]
 
-*** 
-
-- One of the early successes for supervised machine learning was reading [[http://yann.lecun.com/exdb/publis/pdf/matan-92.pdf][the zip code]] in postal mail.
-
-#+CAPTION: Handwritten digits  
-    [[./images/MNIST.png]] 
-
 * Why are Neural Networks popular?
 
 - NNs offer state of the art performance in several classification tasks. 
   - 0.21% [[http://rodrigob.github.io/are_we_there_yet/build/classification_datasets_results.html#4d4e495354][error rate]] on MNIST, close to or better than human performance
 - Composable abstractions 
   - different layers can be combined in a [[http://colah.github.io/posts/2014-07-Conv-Nets-Modular/][modular fashion]] and computations are straightforward
-- Distributed learning is feasible / GPUs enabled several breakthroughs 
+- Distributed learning is feasible  
+- GPUs enabled several breakthroughs 
 
 *** Flexibility
 
@@ -103,10 +114,10 @@ you see a new type of dog that you never saw before - you identify it as a dog a
 #+REVEAL: split
 #+CAPTION: im2txt network provides descriptions of images
 
-#+ATTR_HTML: :height 60%, width 80%
+#+ATTR_HTML: :height 70%, :width 70%
        [[./images/example_captions.jpg]]
 
-*** Architecture of feedforward networks
+*** Architecture of Feedforward Networks
 
 - A feedforward network is one where units do not form a cycle.
 - Networks contain 1 input layer, 1 output layer and one or more hidden layers
@@ -160,7 +171,7 @@ The [[https://github.com/thinktopic/cortex][Cortex library]] is a relatively rec
   - While training, evaluate performance of key metrics
 - Run inference on test instances
  
-*** Network definition
+*** Network Definition
     
 - A Cortex network is vector consisting of layer definitions
 - Arguments depend on the type of layers
@@ -173,7 +184,7 @@ The [[https://github.com/thinktopic/cortex][Cortex library]] is a relatively rec
    (layers/logistic :id :labels)])
 #+END_SRC 
 
-*** Layer examples
+*** Layer Examples
 
 - Input layer takes the shape of the x, y and z axes of a cube
  
@@ -186,7 +197,7 @@ The [[https://github.com/thinktopic/cortex][Cortex library]] is a relatively rec
 (layers/input 2 1 1 :id :data)
 #+END_SRC
 
-*** Hidden layers
+*** Hidden Layers
 
 #+BEGIN_SRC clojure
 ;;- Linear layer with 1 hidden unit  
@@ -200,8 +211,7 @@ The [[https://github.com/thinktopic/cortex][Cortex library]] is a relatively rec
 (layers/batch-normalization)
 #+END_SRC 
 
-*** Softmax output layer 
-
+*** Softmax Output Layer 
 #+BEGIN_SRC clojure
 
 ;;pre-final linear layer with 1 output
@@ -209,7 +219,8 @@ The [[https://github.com/thinktopic/cortex][Cortex library]] is a relatively rec
 ;;output is a bernoulli distribution (probability of 1 or 0)
 (layers/logistic :id :labels)
 
-;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;pre-final linear layer with 10 outputs
 (layers/linear 10)
 ;;output the probabilities of 10 outcomes 
@@ -343,10 +354,10 @@ Why create a listener?
 
 * Training on the loan dataset
 
-- Simulated dataset with 10000 observations on the following 4 variables. 
+- Simulated dataset with 10000 observations 
 - The aim here is to predict which customers will default on their credit card debt
   - *default* A factor with levels No and Yes indicating whether the customer defaulted on their debt
-  - *student* A factor with levels No and Yes indicating whether the customer is a student
+- These are the independent variables
   - *balance* The average balance that the customer has remaining on their credit card after making their monthly payment
   - *income* Income of customer
 
@@ -427,12 +438,12 @@ docker inspect -f '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}'
 
 #+REVEAL: split
 
-Inside the docker container, execute 
+- Inside the docker container, execute 
 #+BEGIN_SRC sh
 tensorboard --port 8888 --logdir=/tflogs
 #+END_SRC
 
-Navigate to http://dockerip:8888 
+- Navigate to http://dockerip:8888 
 
 *** MNIST demo
 

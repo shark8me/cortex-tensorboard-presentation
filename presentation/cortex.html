@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8"/>
-<title>Neural Networks in Clojure with Cortex and Tensorboard</title>
+<title>Introduction to Cortex</title>
 <meta name="author" content="(Kiran Karkera)"/>
 <style type="text/css">
 .underline { text-decoration: underline; }
@@ -26,12 +26,12 @@
 <body>
 <div class="reveal">
 <div class="slides">
-<section id="sec-title-slide"><h1 class="title">Neural Networks in Clojure with Cortex and Tensorboard</h1><h2 class="author">Kiran Karkera</h2><p class="date">Created: 2017-07-26 Wed 23:36</p>
+<section id="sec-title-slide"><h1 class="title">Introduction to Cortex</h1><h2 class="author">Kiran Karkera</h2><p class="date">Created: 2017-07-27 Thu 17:10</p>
 </section>
 
 <section>
-<section id="slide-org85cad06">
-<h2 id="org85cad06">Why NNs in Clojure</h2>
+<section id="slide-org289f70f">
+<h2 id="org289f70f">Neural Networks in Clojure</h2>
 <p>
 A machine learning task's pipeline comprises of the following tasks 
 </p>
@@ -45,8 +45,8 @@ A machine learning task's pipeline comprises of the following tasks
 </ul>
 
 </section>
-<section id="slide-org5f67109">
-<h4 id="org5f67109"></h4>
+<section id="slide-orgad19a5d">
+<h4 id="orgad19a5d"></h4>
 <ul>
 <li>Clojure (+Java) libraries are quite capable in all parts of the pipeline</li>
 <li>Excellent support for (non-neural network) machine learning toolkits</li>
@@ -60,8 +60,8 @@ A machine learning task's pipeline comprises of the following tasks
 </ul>
 
 </section>
-<section id="slide-org6fb1067">
-<h4 id="org6fb1067">Exceptions</h4>
+<section id="slide-org988d96e">
+<h4 id="org988d96e">Exceptions</h4>
 <ul>
 <li>Pretrained networks available for the task 
 <ul>
@@ -72,13 +72,13 @@ A machine learning task's pipeline comprises of the following tasks
 </ul>
 
 </section>
-<section id="slide-orgefbdd45">
-<h4 id="orgefbdd45">Alternatives:</h4>
+<section id="slide-org6334550">
+<h4 id="org6334550">Alternatives:</h4>
 <ul>
-<li>Data collection, preparation, training in Clojure</li>
+<li>Data collection, preparation, cleaning in Clojure</li>
 <li>Train in a different toolset, inference in Clojure/Java
 <ul>
-<li>For example, train in Tensorflow / DeepLearningForJ,</li>
+<li>For example, train in Tensorflow / DeepLearning4J</li>
 <li>Use trained network for inference from Java or Clojure</li>
 
 </ul></li>
@@ -88,12 +88,12 @@ A machine learning task's pipeline comprises of the following tasks
 </section>
 </section>
 <section>
-<section id="slide-org9d643fa">
-<h2 id="org9d643fa">Machine Learning digression</h2>
-<div class="outline-text-2" id="text-org9d643fa">
+<section id="slide-org86ce083">
+<h2 id="org86ce083">Machine Learning Digression</h2>
+<div class="outline-text-2" id="text-org86ce083">
 </div></section>
-<section id="slide-orgdf5045c">
-<h4 id="orgdf5045c">Supervised machine learning:</h4>
+<section id="slide-org3e4a674">
+<h4 id="org3e4a674">Supervised Machine Learning:</h4>
 <blockquote nil>
 <p>
 When you are a kid and you see different types of animals, your father tells you that this particular animal is a dog. After doing this a few times, 
@@ -101,9 +101,6 @@ you see a new type of dog that you never saw before - you identify it as a dog a
 </p>
 </blockquote>
 
-<p>
-<a href="https://www.quora.com/What-is-the-difference-between-supervised-and-unsupervised-learning-algorithms/answer/Shehroz-Khan-2?srid=o0Wh">Quora post reference</a>
-</p>
 
 <div class="figure">
 <p><img src="./images/woof_meow.jpg" alt="woof_meow.jpg" />
@@ -111,9 +108,30 @@ you see a new type of dog that you never saw before - you identify it as a dog a
 </div>
 
 
+<p>
+<a href="https://www.quora.com/What-is-the-difference-between-supervised-and-unsupervised-learning-algorithms/answer/Shehroz-Khan-2?srid=o0Wh">Quora post reference</a>
+</p>
+
 </section>
-<section id="slide-orge91a31b">
-<h3 id="orge91a31b">Applications of Supervised learning</h3>
+<section id="slide-orgde8e129">
+<h3 id="orgde8e129">Applications of Supervised Learning</h3>
+</section>
+<section >
+<ul>
+<li>One of the early successes for supervised machine learning was reading <a href="http://yann.lecun.com/exdb/publis/pdf/matan-92.pdf">the zip code</a> in postal mail.</li>
+<li>Dataset called MNIST is a benchmark dataset in machine learning</li>
+
+</ul>
+
+
+<div class="figure">
+<p><img src="./images/MNIST.png" alt="MNIST.png" /> 
+</p>
+<p><span class="figure-number">Figure 2: </span>Handwritten digits</p>
+</div>
+
+</section>
+<section >
 <ul>
 <li>A Kaggle competition to distinguish between cats and dogs was conducted in 2014.</li>
 <li>Training on 25,000 images of dogs and cats, 
@@ -121,19 +139,22 @@ you see a new type of dog that you never saw before - you identify it as a dog a
 <li>the leading teams got to 98.9% <a href="https://www.kaggle.com/c/dogs-vs-cats/leaderboard">accuracy</a>.</li>
 
 </ul></li>
+<li><a href="#/slide-orgad19a5d">Here's</a> the classifier implemented in Cortex.</li>
 
 </ul>
 
+</section>
+<section >
 
 <div class="figure">
-<p><img src="./images/cat_or_dog.jpg" alt="cat_or_dog.jpg" height="80%, width 80%" />
+<p><img src="./images/cat_or_dog.jpg" alt="cat_or_dog.jpg" height="50%," width="50%" />
 </p>
 </div>
 
 
 </section>
-<section id="slide-org77747f9">
-<h4 id="org77747f9"></h4>
+<section id="slide-orgb6936f3">
+<h4 id="orgb6936f3"></h4>
 <ul>
 <li>Classifying aspects of human faces such as gender, age, type of expression and skin colour</li>
 
@@ -146,25 +167,10 @@ you see a new type of dog that you never saw before - you identify it as a dog a
 </div>
 
 </section>
-<section id="slide-orga4ec7d8">
-<h4 id="orga4ec7d8"></h4>
-<ul>
-<li>One of the early successes for supervised machine learning was reading <a href="http://yann.lecun.com/exdb/publis/pdf/matan-92.pdf">the zip code</a> in postal mail.</li>
-
-</ul>
-
-
-<div class="figure">
-<p><img src="./images/MNIST.png" alt="MNIST.png" /> 
-</p>
-<p><span class="figure-number">Figure 4: </span>Handwritten digits</p>
-</div>
-
-</section>
 </section>
 <section>
-<section id="slide-org25af69d">
-<h2 id="org25af69d">Why are Neural Networks popular?</h2>
+<section id="slide-org223e367">
+<h2 id="org223e367">Why are Neural Networks popular?</h2>
 <ul>
 <li>NNs offer state of the art performance in several classification tasks. 
 <ul>
@@ -176,13 +182,14 @@ you see a new type of dog that you never saw before - you identify it as a dog a
 <li>different layers can be combined in a <a href="http://colah.github.io/posts/2014-07-Conv-Nets-Modular/">modular fashion</a> and computations are straightforward</li>
 
 </ul></li>
-<li>Distributed learning is feasible / GPUs enabled several breakthroughs</li>
+<li>Distributed learning is feasible</li>
+<li>GPUs enabled several breakthroughs</li>
 
 </ul>
 
 </section>
-<section id="slide-orgf999df1">
-<h4 id="orgf999df1">Flexibility</h4>
+<section id="slide-orgdc1d510">
+<h4 id="orgdc1d510">Flexibility</h4>
 <ul>
 <li>NNs can accommodate several outputs:
 <ul>
@@ -204,13 +211,13 @@ you see a new type of dog that you never saw before - you identify it as a dog a
 <section >
 
 <div class="figure">
-<p><img src="./images/example_captions.jpg" alt="example_captions.jpg" height="60%, width 80%" />
+<p><img src="./images/example_captions.jpg" alt="example_captions.jpg" height="70%," width="70%" />
 </p>
 </div>
 
 </section>
-<section id="slide-orga3a2b85">
-<h4 id="orga3a2b85">Architecture of feedforward networks</h4>
+<section id="slide-org1cf21ed">
+<h4 id="org1cf21ed">Architecture of Feedforward Networks</h4>
 <ul>
 <li>A feedforward network is one where units do not form a cycle.</li>
 <li>Networks contain 1 input layer, 1 output layer and one or more hidden layers</li>
@@ -229,8 +236,8 @@ you see a new type of dog that you never saw before - you identify it as a dog a
 </div>
 
 </section>
-<section id="slide-org1b325b4">
-<h4 id="org1b325b4">Weights in a network</h4>
+<section id="slide-org0308274">
+<h4 id="org0308274">Weights in a network</h4>
 <ul>
 <li>Each of the connections between layers has a weight attached to it.</li>
 
@@ -244,8 +251,8 @@ you see a new type of dog that you never saw before - you identify it as a dog a
 </div>
 
 </section>
-<section id="slide-orgb9b9a56">
-<h4 id="orgb9b9a56">Transfer function</h4>
+<section id="slide-org2f83867">
+<h4 id="org2f83867">Transfer function</h4>
 <ul>
 <li>Activation function combines the inputs</li>
 <li>Transfer function modifies the scalar output (e.g. squashes it)</li>
@@ -266,8 +273,8 @@ you see a new type of dog that you never saw before - you identify it as a dog a
 </section>
 </section>
 <section>
-<section id="slide-org076271b">
-<h2 id="org076271b">Cortex</h2>
+<section id="slide-orgb983b22">
+<h2 id="orgb983b22">Cortex</h2>
 <p>
 The <a href="https://github.com/thinktopic/cortex">Cortex library</a> is a relatively recent library that implements Neural Networks in pure Clojure.
 </p>
@@ -290,8 +297,8 @@ The <a href="https://github.com/thinktopic/cortex">Cortex library</a> is a relat
 
 
 </section>
-<section id="slide-org52ee087">
-<h4 id="org52ee087">Steps to create, train and do inference with Cortex</h4>
+<section id="slide-org405394f">
+<h4 id="org405394f">Steps to create, train and do inference with Cortex</h4>
 <ul>
 <li>Define a network with input, output and hidden layers</li>
 <li>Create train / test datasets</li>
@@ -306,8 +313,8 @@ The <a href="https://github.com/thinktopic/cortex">Cortex library</a> is a relat
 </ul>
 
 </section>
-<section id="slide-orgcde7e82">
-<h4 id="orgcde7e82">Network definition</h4>
+<section id="slide-orgeb8dffa">
+<h4 id="orgeb8dffa">Network Definition</h4>
 <ul>
 <li>A Cortex network is vector consisting of layer definitions</li>
 <li>Arguments depend on the type of layers</li>
@@ -325,8 +332,8 @@ The <a href="https://github.com/thinktopic/cortex">Cortex library</a> is a relat
 </div>
 
 </section>
-<section id="slide-orgb4d0226">
-<h4 id="orgb4d0226">Layer examples</h4>
+<section id="slide-orgfdf741e">
+<h4 id="orgfdf741e">Layer Examples</h4>
 <ul>
 <li>Input layer takes the shape of the x, y and z axes of a cube</li>
 
@@ -344,8 +351,8 @@ The <a href="https://github.com/thinktopic/cortex">Cortex library</a> is a relat
 </div>
 
 </section>
-<section id="slide-orgd740df8">
-<h4 id="orgd740df8">Hidden layers</h4>
+<section id="slide-orgcec1248">
+<h4 id="orgcec1248">Hidden Layers</h4>
 <div class="org-src-container">
 
 <pre  class="src src-clojure"><span style="color: #2aa1ae; background-color: #292e34;">;;</span><span style="color: #2aa1ae; background-color: #292e34;">- Linear layer with 1 hidden unit  </span>
@@ -361,8 +368,8 @@ The <a href="https://github.com/thinktopic/cortex">Cortex library</a> is a relat
 </div>
 
 </section>
-<section id="slide-org6df62de">
-<h4 id="org6df62de">Softmax output layer</h4>
+<section id="slide-orge0726cc">
+<h4 id="orge0726cc">Softmax Output Layer</h4>
 <div class="org-src-container">
 
 <pre  class="src src-clojure"><span style="color: #2aa1ae; background-color: #292e34;">;;</span><span style="color: #2aa1ae; background-color: #292e34;">pre-final linear layer with 1 output</span>
@@ -370,7 +377,8 @@ The <a href="https://github.com/thinktopic/cortex">Cortex library</a> is a relat
 <span style="color: #2aa1ae; background-color: #292e34;">;;</span><span style="color: #2aa1ae; background-color: #292e34;">output is a bernoulli distribution (probability of 1 or 0)</span>
 <span style="color: #4f97d7;">(</span><span style="color: #ce537a; font-weight: bold;">layers</span><span style="color: #b2b2b2; background-color: #292b2e;">/</span>logistic <span style="color: #a45bad;">:id</span> <span style="color: #a45bad;">:labels</span><span style="color: #4f97d7;">)</span>
 
-<span style="color: #2aa1ae; background-color: #292e34;">;;;;;;;</span>
+<span style="color: #2aa1ae; background-color: #292e34;">;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;</span>
+<span style="color: #2aa1ae; background-color: #292e34;">;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;</span>
 <span style="color: #2aa1ae; background-color: #292e34;">;;</span><span style="color: #2aa1ae; background-color: #292e34;">pre-final linear layer with 10 outputs</span>
 <span style="color: #4f97d7;">(</span><span style="color: #ce537a; font-weight: bold;">layers</span><span style="color: #b2b2b2; background-color: #292b2e;">/</span>linear <span style="color: #a45bad;">10</span><span style="color: #4f97d7;">)</span>
 <span style="color: #2aa1ae; background-color: #292e34;">;;</span><span style="color: #2aa1ae; background-color: #292e34;">output the probabilities of 10 outcomes </span>
@@ -380,8 +388,8 @@ The <a href="https://github.com/thinktopic/cortex">Cortex library</a> is a relat
 
 
 </section>
-<section id="slide-org0804049">
-<h4 id="org0804049">Creating train (and test) datasets</h4>
+<section id="slide-orgcaa1a35">
+<h4 id="orgcaa1a35">Creating train (and test) datasets</h4>
 <ul>
 <li>Dataset is a vector of training instances</li>
 <li>Each training instance is a map with 2 keys</li>
@@ -398,8 +406,8 @@ The <a href="https://github.com/thinktopic/cortex">Cortex library</a> is a relat
 
 
 </section>
-<section id="slide-org81330bb">
-<h4 id="org81330bb">Create a listener (if required)</h4>
+<section id="slide-org09f1868">
+<h4 id="org09f1868">Create a listener (if required)</h4>
 <p>
 Why create a listener? 
 </p>
@@ -418,7 +426,7 @@ Why create a listener?
 </section>
 <section >
 
-<ul class="org-ul"><li><a id="orge7a1371"></a>Default listener<br /><ul>
+<ul class="org-ul"><li><a id="org21361f4"></a>Default listener<br /><ul>
 <li>Live updates on a local webserver</li>
 <li>Creates png images from training instances to observe training progress</li>
 
@@ -463,8 +471,8 @@ Why create a listener?
 </div></li></ul>
 
 </section>
-<section id="slide-org28afa0b">
-<h4 id="org28afa0b">Digression: Tensorboard</h4>
+<section id="slide-orgc3c5211">
+<h4 id="orgc3c5211">Digression: Tensorboard</h4>
 <ul>
 <li><a href="https://www.tensorflow.org/get_started/summaries_and_tensorboard">Tensorboard</a> is a suite of visualization tools to understand, debug and optimize Tensorflow</li>
 <li>Users can view plots of   
@@ -489,8 +497,8 @@ Why create a listener?
 
 
 </section>
-<section id="slide-org2f80f09">
-<h4 id="org2f80f09">Tensorboard listener</h4>
+<section id="slide-org9c2599a">
+<h4 id="org9c2599a">Tensorboard listener</h4>
 <ul>
 <li>Listen for Cortex events and convert it to Tensorboard compatible events</li>
 <li>Out of the box support for 
@@ -503,8 +511,8 @@ Why create a listener?
 </ul>
 
 </section>
-<section id="slide-orgf219315">
-<h4 id="orgf219315">Usage:</h4>
+<section id="slide-orgcba5bfb">
+<h4 id="orgcba5bfb">Usage:</h4>
 <ul>
 <li>Pass a map with the file name to log events to 
 <ul>
@@ -527,8 +535,8 @@ Why create a listener?
 </div>
 
 </section>
-<section id="slide-orgd12d203">
-<h4 id="orgd12d203">Train the model</h4>
+<section id="slide-orgd3b472e">
+<h4 id="orgd3b472e">Train the model</h4>
 <ul>
 <li>Using the cortex.experiment.classification/perform-experiment API</li>
 <li>Specify additional options such as number of <a href="https://stackoverflow.com/a/31842945/845843">epochs </a> 
@@ -549,8 +557,8 @@ Why create a listener?
 </div>
 
 </section>
-<section id="slide-org9b94a9d">
-<h4 id="org9b94a9d">Perform inference</h4>
+<section id="slide-org4137957">
+<h4 id="org4137957">Perform inference</h4>
 <div class="org-src-container">
 
 <pre  class="src src-clojure"><span style="color: #4f97d7;">(</span><span style="color: #a45bad;">:require</span> <span style="color: #bc6ec5;">[</span><span style="color: #ce537a; font-weight: bold;">cortex.nn.execute</span> <span style="color: #a45bad;">:as</span> execute<span style="color: #bc6ec5;">]</span>
@@ -569,14 +577,17 @@ Why create a listener?
 </section>
 </section>
 <section>
-<section id="slide-orgf447acd">
-<h2 id="orgf447acd">Training on the loan dataset</h2>
+<section id="slide-org4cbe5ba">
+<h2 id="org4cbe5ba">Training on the loan dataset</h2>
 <ul>
-<li>Simulated dataset with 10000 observations on the following 4 variables.</li>
+<li>Simulated dataset with 10000 observations</li>
 <li>The aim here is to predict which customers will default on their credit card debt
 <ul>
 <li><b>default</b> A factor with levels No and Yes indicating whether the customer defaulted on their debt</li>
-<li><b>student</b> A factor with levels No and Yes indicating whether the customer is a student</li>
+
+</ul></li>
+<li>These are the independent variables
+<ul>
 <li><b>balance</b> The average balance that the customer has remaining on their credit card after making their monthly payment</li>
 <li><b>income</b> Income of customer</li>
 
@@ -585,8 +596,8 @@ Why create a listener?
 </ul>
 
 </section>
-<section id="slide-orgc22eaca">
-<h4 id="orgc22eaca">Read the dataset</h4>
+<section id="slide-org55f4fe7">
+<h4 id="org55f4fe7">Read the dataset</h4>
 <ul>
 <li>Dataset consists of vector of 10k instances</li>
 <li>Each instance is a map with :data and :labels</li>
@@ -608,8 +619,8 @@ Why create a listener?
 </div>
 
 </section>
-<section id="slide-orgcdcb93d">
-<h4 id="orgcdcb93d">Define the network</h4>
+<section id="slide-orgf2f5bd9">
+<h4 id="orgf2f5bd9">Define the network</h4>
 <ul>
 <li>Define input and output layers along with 1 hidden layer</li>
 
@@ -628,8 +639,8 @@ Why create a listener?
 </div>
 
 </section>
-<section id="slide-org67f1f06">
-<h4 id="org67f1f06">Run training</h4>
+<section id="slide-orge8fcce7">
+<h4 id="orge8fcce7">Run training</h4>
 <div class="org-src-container">
 
 <pre  class="src src-clojure"><span style="color: #4f97d7;">(</span><span style="color: #4f97d7; font-weight: bold;">let</span> <span style="color: #bc6ec5;">[</span>ds <span style="color: #2d9574;">(</span>shuffle <span style="color: #67b11d;">(</span><span style="color: #ce537a; font-weight: bold;">logtest</span><span style="color: #b2b2b2; background-color: #292b2e;">/</span><span style="color: #4f97d7; font-weight: bold;">default-dataset</span><span style="color: #67b11d;">)</span><span style="color: #2d9574;">)</span>
@@ -651,12 +662,12 @@ Why create a listener?
 </section>
 </section>
 <section>
-<section id="slide-orgb283c06">
-<h2 id="orgb283c06">Demo</h2>
-<div class="outline-text-2" id="text-orgb283c06">
+<section id="slide-org1a2024d">
+<h2 id="org1a2024d">Demo</h2>
+<div class="outline-text-2" id="text-org1a2024d">
 </div></section>
-<section id="slide-org3a8a5d5">
-<h4 id="org3a8a5d5">Logistic demo</h4>
+<section id="slide-org84f4771">
+<h4 id="org84f4771">Logistic demo</h4>
 <div class="org-src-container">
 
 <pre  class="src src-sh"><span style="color: #2aa1ae; background-color: #292e34;">#</span><span style="color: #2aa1ae; background-color: #292e34;">assumes pwd is cortex root folder</span>
@@ -681,22 +692,24 @@ docker inspect -f <span style="color: #2d9574;">'{{range .NetworkSettings.Networ
 </section>
 <section >
 
-<p>
-Inside the docker container, execute 
-</p>
+<ul>
+<li>Inside the docker container, execute</li>
+
+</ul>
 <div class="org-src-container">
 
 <pre  class="src src-sh">tensorboard --port <span style="color: #a45bad;">8888</span> --logdir=/tflogs
 </pre>
 </div>
 
-<p>
-Navigate to <a href="http://dockerip:8888">http://dockerip:8888</a> 
-</p>
+<ul>
+<li>Navigate to <a href="http://dockerip:8888">http://dockerip:8888</a></li>
+
+</ul>
 
 </section>
-<section id="slide-orgdd9461a">
-<h4 id="orgdd9461a">MNIST demo</h4>
+<section id="slide-orgb792456">
+<h4 id="orgb792456">MNIST demo</h4>
 <div class="org-src-container">
 
 <pre  class="src src-sh"><span style="color: #4f97d7;">cd</span> examples/mnist-classification
@@ -709,8 +722,8 @@ lein run --tensorboard-output /tmp/tflogs/mnist/mnist.tfevents.out
 </section>
 </section>
 <section>
-<section id="slide-org7a5197c">
-<h2 id="org7a5197c">Resources</h2>
+<section id="slide-org08965b7">
+<h2 id="org08965b7">Resources</h2>
 <ul>
 <li><a href="https://github.com/thinktopic/cortex">Cortex project @ Github</a></li>
 <li><a href="https://www.tensorflow.org/get_started/summaries_and_tensorboard">Tensorboard documentation</a></li>
@@ -725,8 +738,8 @@ lein run --tensorboard-output /tmp/tflogs/mnist/mnist.tfevents.out
 
 
 </section>
-<section id="slide-orgff36575">
-<h3 id="orgff36575">Thanks to</h3>
+<section id="slide-org6c8d262">
+<h3 id="org6c8d262">Thanks to</h3>
 <ul>
 <li>Team that created Cortex</li>
 
@@ -751,6 +764,7 @@ slideNumber: 'c',
 rollingLinks: false,
 keyboard: true,
 overview: true,
+maxScale: 5.00,
 
 theme: Reveal.getQueryHash().theme, // available themes are in /css/theme
 transition: Reveal.getQueryHash().transition || 'default', // default/cube/page/concave/zoom/linear/fade/none
