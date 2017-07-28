@@ -13,6 +13,8 @@
 #+OPTIONS: num:nil
 #+OPTIONS: toc:0
 #+OPTIONS: org-reveal-title-slide:%t %a %e
+#+REVEAL_EXTRA_CSS: ./presentation.css
+#+REVEAL_EXTRA_CSS: ./night.css
 # #+REVEAL_MARGIN: 0.2
 #+REVEAL_MAX_SCALE: 5 
 # * An introduction to Cortex
@@ -432,7 +434,7 @@ lein test :only cortex.experiment.tensorboard-test
 #this is mounted on the docker instance at the /tflogs folder
 docker run -it -p 8888:8888 --entrypoint "/bin/bash" -v /tmp/tflogs/:/tflogs tensorflow/tensorflow
 #to get IP address of container 
-docker inspect -f '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}'
+docker inspect -f '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' <containerid>
 #returns dockerip
 #+END_SRC
 
@@ -460,7 +462,8 @@ lein run --tensorboard-output /tmp/tflogs/mnist/mnist.tfevents.out
 - [[https://www.tensorflow.org/get_started/summaries_and_tensorboard][Tensorboard documentation]]
 - [[https://github.com/shark8me/tfevent-sink][tfevent-sink project @ Github]]
   - This project converts Cortex events to Tensorflow compatible events
-- This presentation ([[https://github.com/shark8me/cortex-tensorboard-presentation/blob/master/presentation/cortex.html][html]]) and the [[https://github.com/shark8me/cortex-tensorboard-presentation/blob/master/presentation/cortex.org][org-mode source]].
+- This presentation is at https://github.com/shark8me/cortex-tensorboard-presentation
+  - ([[https://github.com/shark8me/cortex-tensorboard-presentation/blob/master/presentation/cortex.html][html]]) and the [[https://github.com/shark8me/cortex-tensorboard-presentation/blob/master/presentation/cortex.org][org-mode source]].
 
 
 ** Thanks to
