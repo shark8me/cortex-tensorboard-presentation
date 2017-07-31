@@ -1,7 +1,11 @@
 # An introduction to Cortex
 
 This is the source repository for a presentation on building Neural Networks in Clojure using the [Cortex](https://github.com/thinktopic/cortex) library.
-The raw HTML can be viewed at this link and here's the [org-mode](https://github.com/shark8me/cortex-tensorboard-presentation/blob/master/presentation/cortex.org) source.
+
+The presentation can be 
+* viewed on [Youtube](https://engineers.sg/video/neural-networks-in-clojure-singapore-clojure-meetup--1902)
+* slides are [available online](https://cdn.rawgit.com/shark8me/cortex-tensorboard-presentation/8757ff58/presentation/cortex.html) 
+* here's the [org-mode](https://github.com/shark8me/cortex-tensorboard-presentation/blob/master/presentation/cortex.org) source.
 
 ## License
 
