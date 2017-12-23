@@ -9,8 +9,8 @@ This is the source repository for a presentation on building Neural Networks in 
 
 The presentation can be 
 * viewed on [Youtube](https://engineers.sg/video/neural-networks-in-clojure-singapore-clojure-meetup--1902)
-* slides are [available online](https://cdn.rawgit.com/shark8me/cortex-tensorboard-presentation/8757ff58/presentation/cortex.html) 
-* here's the [org-mode](https://github.com/shark8me/cortex-tensorboard-presentation/blob/master/presentation/cortex.org) source.
+* slides are [available online](https://cdn.rawgit.com/shark8me/cortex-tensorboard-presentation/4ab391a3/docs/cortex.html) 
+* here's the [org-mode](https://cdn.rawgit.com/shark8me/cortex-tensorboard-presentation/4ab391a3/docs/cortex.org) source.
 
 ## License
 
