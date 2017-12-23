@@ -1,3 +1,8 @@
+---
+layout: default
+title: An introduction to Cortex
+---
+
 # An introduction to Cortex
 
 This is the source repository for a presentation on building Neural Networks in Clojure using the [Cortex](https://github.com/thinktopic/cortex) library.
